@@ -1,0 +1,17 @@
+generator client {
+  provider             = "prisma-client-py" // <--- This tells Prisma to generate Python code!
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Url {
+  id      String @id @default(uuid())
+  createdAt DateTime @default(now())
+  original_url String
+  short_url    String
+  
+}

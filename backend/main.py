@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from fastapi import FastAPI
 from prisma import Prisma
 from pydantic import BaseModel
@@ -5,6 +6,7 @@ import string
 import random
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+import redis
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -15,7 +17,7 @@ app.add_middleware(
 )
 
 db = Prisma()
-
+cache = redis.Redis(host="localhost",port=6379,db=0,decode_responses=True)
 class URLRequest(BaseModel):
     original_url: str
 
@@ -44,10 +46,19 @@ async def UrlShortner(request: URLRequest):
 
 @app.get("/url/{code}")
 async def redirect_url(code:str):
-    findurl = await db.url.find_first(
-        where={
-            "short_url": code
-        }
-    )
+    cached_url = cache.get(code)
+    if cached_url:
+        return RedirectResponse(url=cached_url)
+    else:
+        findurl = await db.url.find_first(
+            where={
+                "short_url" : code
+            }
+        )
+        if findurl:
+            cache.set(code,findurl.original_url,ex=3600)
+            return RedirectResponse(url=findurl.original_url)
+        else:
+            raise HTTPException(status_code=404, detail="Short URL does not exist")
 
-    return RedirectResponse(url=findurl.original_url)
+    

@@ -1,4 +1,5 @@
-from fastapi import HTTPException
+from ipaddress import ip_address
+from fastapi import HTTPException, FastAPI, Request
 from fastapi import FastAPI
 from prisma import Prisma
 from pydantic import BaseModel
@@ -35,8 +36,17 @@ async def root():
     return {"Message":"Welcome to the Url shortner API!!"}
 
 @app.post("/url/shorten")
-async def UrlShortner(request: URLRequest):
-    originalUrl = request.original_url
+async def UrlShortner(url: URLRequest,request: Request):
+    ip_address = request.client.host
+    redis_key = f"rate_limit:post:{ip_address}"
+    print("ip_address: ",ip_address)
+    requests_count = cache.incr(redis_key)
+    print("requests_count",requests_count)
+    if requests_count == 1:
+        cache.expire(redis_key,60)
+    if requests_count > 5:
+        raise HTTPException(status_code=429,detail="Too Many Requests")
+    originalUrl = url.original_url
     randomStr = "".join(random.choices(string.ascii_letters,k=5))
     ShortUrl = await db.url.create(
         data={"original_url": originalUrl, "short_url": randomStr}
@@ -45,7 +55,15 @@ async def UrlShortner(request: URLRequest):
 
 
 @app.get("/url/{code}")
-async def redirect_url(code:str):
+async def redirect_url(code:str,request:Request):
+    ip_address = request.client.host
+    redis_key = f"rate_limit:get:{ip_address}"
+    requests_count = cache.incr(redis_key)
+    print("requests_count",requests_count)
+    if requests_count == 1:
+        cache.expire(redis_key,60)
+    if requests_count > 5:
+        raise HTTPException(status_code=429,detail="Too Many Requests")
     cached_url = cache.get(code)
     if cached_url:
         return RedirectResponse(url=cached_url)

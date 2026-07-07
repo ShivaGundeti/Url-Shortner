@@ -12,5 +12,26 @@ services:
   url-redis:
     image: redis
     container_name: url-redis
+    environment:
+      - REDIS_PASSWORD=redis6801
     ports:
-    - "6379:6379"
+      - "6379:6379"
+  
+  fastapi-app:
+    build: ./backend
+    container_name: fastapi-app
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - url-postgres
+      - url-redis
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - fastapi-app

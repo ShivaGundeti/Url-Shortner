@@ -7,7 +7,7 @@ export default function UserSearch() {
     const[Url,setUrl] = useState("")
     const[newUrl, setnewUrl] = useState("")
     async function ShortUrl(){
-        const url = await axios.post("http://localhost:8000/url/shorten",{ original_url: Url })
+        const url = await axios.post("http://localhost:80/url/shorten",{ original_url: Url })
         console.log(url);
         setnewUrl(url.data.data.short_url)
     }

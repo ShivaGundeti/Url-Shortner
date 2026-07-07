@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 db = Prisma()
-cache = redis.Redis(host="localhost",port=6379,db=0,decode_responses=True)
+cache = redis.Redis(host="url-redis", port=6379, db=0, decode_responses=True)
 class URLRequest(BaseModel):
     original_url: str
 

@@ -20,6 +20,8 @@ services:
   fastapi-app:
     build: ./backend
     container_name: fastapi-app
+    volumes:
+      - ./backend:/app
     env_file:
       - ./backend/.env
     depends_on:

@@ -12,7 +12,7 @@ import jwt
 from datetime import datetime, timedelta
 from fastapi import Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
+import socket
 app = FastAPI()
 security = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"],deprecated="auto")
@@ -36,6 +36,8 @@ class AuthRequest(BaseModel):
     email: str
     password: str
 
+class UserUrls(BaseModel):
+    id: str
 
 @app.on_event("startup")
 async def startup():
@@ -47,7 +49,8 @@ async def shutdown():
 
 @app.get("/")
 async def root():
-    return {"Message":"Welcome to the Url shortner API!!"}
+    hostname = socket.gethostname()
+    return {"Message": f"Welcome to the Url shortner API!! Served by Server ID: {hostname}"}
 
 
 @app.post("/url/test-api")
@@ -64,12 +67,12 @@ async def SignUp(request: AuthRequest):
         raise HTTPException(status_code=400,detail="Email and Password are required")
     else:
         hashed_password = pwd_context.hash(user_password)
-        Save_User = await db.user.create(
+        New_User = await db.user.create(
             data = {
              "email":user_email,"password":hashed_password
             }
         )
-        return {"Status:":201,"Sucess: ":Save_User}
+        return {"Status:":201,"data":New_User}
 
 
 @app.post("/url/login")
@@ -124,6 +127,28 @@ async def UrlShortner(url: URLRequest, request: Request, user_id: str = Security
     return{"status": "Success","data": ShortUrl}
 
 
+   
+@app.get("/url/user")
+async def GetUserUrls(userid: str = Security(verify_token)):
+    userData = await db.url.find_many(
+        where={
+            "userId":userid
+        }
+    )
+    return {"data":userData}
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.get("/url/{code}")
 async def redirect_url(code:str,request:Request):
     ip_address = request.client.host
@@ -149,4 +174,4 @@ async def redirect_url(code:str,request:Request):
         else:
             raise HTTPException(status_code=404, detail="Short URL does not exist")
 
-    
+ 

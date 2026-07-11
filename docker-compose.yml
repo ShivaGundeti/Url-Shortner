@@ -19,7 +19,8 @@ services:
   
   fastapi-app:
     build: ./backend
-    container_name: fastapi-app
+    deploy:
+      replicas: 3
     volumes:
       - ./backend:/app
     env_file:

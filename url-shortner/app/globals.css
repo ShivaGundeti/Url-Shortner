@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+body {
+  background-color: #050505;
+  color: #ffffff;
+}
+
+/* Floating Bubbles Animation */
+@keyframes float {
+  0% { transform: translateY(0px) scale(1); opacity: 0; }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.8; }
+  100% { transform: translateY(-1000px) scale(1.5); opacity: 0; }
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), rgba(255,255,255,0.01));
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2), inset 0 0 20px rgba(255,255,255,0.05);
+  animation: float linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}

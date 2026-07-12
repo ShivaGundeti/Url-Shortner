@@ -1,10 +1,13 @@
 "use client"
-
+import {zodResolver} from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Login, AuthRequest } from "../../api/index"
+import LoginSchema from "@/schemas/loginschema";
 export default function Loginpage() {
-    const { register, handleSubmit,formState: {errors} } = useForm<AuthRequest>()
+    const { register, handleSubmit,formState: {errors} } = useForm<AuthRequest>({
+        resolver: zodResolver(LoginSchema)
+    })
     //explain formState:{errors}
 
     const { mutate, isPending } = useMutation({
@@ -23,7 +26,7 @@ export default function Loginpage() {
     return (
         <>
             <form action="" onSubmit={handleSubmit(onSubmit)}>
-                <input type="text" {...register("email", { required: "Email is required" })} placeholder="Enter email" />
+                <input type="text" {...register("email")} placeholder="Enter email" />
                 {errors.email && (
                     <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
                 )}

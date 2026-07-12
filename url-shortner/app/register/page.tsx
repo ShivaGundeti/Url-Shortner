@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Register, AuthRequest } from "../../api/index"
 export default function Loginpage() {
-    const { register, handleSubmit, } = useForm<AuthRequest>()
+    const { register, handleSubmit, formState: { errors }} = useForm<AuthRequest>()
     //explain formState:{errors}
 
     const { mutate, isPending } = useMutation({
@@ -18,14 +18,21 @@ export default function Loginpage() {
     })
     const onSubmit = (data: AuthRequest) => {
         mutate(data)
+
     }
+       console.log("Current Form Errors:", errors);
     return (
         <>
             <form action="" onSubmit={handleSubmit(onSubmit)}>
                 <input type="text" {...register("email", { required: "Email is required" })} placeholder="Enter email" />
+                {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                )}
                 <input type="password" {...register("password")} placeholder="Enter password" />
-                {/* <p>{errors?.email?.message}</p> */}
-                <button>Submit</button>
+                {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                )}
+               <button>Submit</button>
             </form>
         </>
     )

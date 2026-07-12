@@ -10,8 +10,6 @@ export interface UserUrlsResponse {
 
 
 export async function GetUserUrls(){
-    const api = await axios.get<UserUrlsResponse>("http://localhost:80/url/user",{headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-        }})
+    const api = await axios.get<UserUrlsResponse>("http://localhost:80/url/user",{withCredentials:true})
     return api.data.data
 }

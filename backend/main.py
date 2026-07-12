@@ -1,4 +1,4 @@
-from fastapi import HTTPException, FastAPI, Request
+from fastapi import HTTPException, FastAPI, Request, Response
 from fastapi import FastAPI
 from prisma import Prisma
 from pydantic import BaseModel
@@ -76,7 +76,7 @@ async def SignUp(request: AuthRequest):
 
 
 @app.post("/url/login")
-async def SignIn(request: AuthRequest):
+async def SignIn(request: AuthRequest,response:Response):
     user_email = request.email
     user_password = request.password
     if not user_email.strip() or not user_password.strip():
@@ -97,15 +97,26 @@ async def SignIn(request: AuthRequest):
         expire = datetime.utcnow() + timedelta(minutes=60)
         payload = {"sub":User.id,"exp":expire}
         token = jwt.encode(payload,SECRET_KEY,algorithm="HS256")
-        return {"access_token": token, "token_type": "bearer"}
+        response.set_cookie(
+            key="access_token",
+            value=f"Bearer {token}",
+            httponly=True,
+            samesite="lax",
+            max_age=3600
+        )
+        return {"message": "Successfully logged in"}
 
-def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
-    token = credentials.credentials
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        return payload.get("sub") # Returns the User ID!
-    except:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
+def verify_token(request:Request):
+     token_cookie = request.cookies.get("access_token")
+     if not token_cookie:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+     else:
+        token = token_cookie.split(" ")[1]
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            return payload.get("sub") # Returns the User ID!
+        except:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 
 @app.post("/url/shorten")

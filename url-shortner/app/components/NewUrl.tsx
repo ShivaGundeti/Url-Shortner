@@ -1,5 +1,5 @@
 export default function NewUrl({shorturl}: {shorturl: string}) {
-    const fullUrl = `http://localhost/url/${shorturl}`;
+    const fullUrl = `http://16.171.3.40/url/${shorturl}`;
     
     return (
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">

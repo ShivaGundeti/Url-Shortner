@@ -18,7 +18,7 @@ security = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"],deprecated="auto")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000","http://localhost:3001"], # This tells Python that Next.js is allowed!
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://16.171.3.40:3000"], # This tells Python that Next.js is allowed!
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

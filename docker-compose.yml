@@ -20,7 +20,7 @@ services:
   fastapi-app:
     build: ./backend
     deploy:
-      replicas: 3
+      replicas: 1
     volumes:
       - ./backend:/app
     env_file:

@@ -24,3 +24,4 @@ jobs:
 
             echo "NEXT_PUBLIC_API_URL=http://${{ secrets.AWS_HOST }}:80" > url-shortner/.env.production
             sudo docker compose up -d --build
+            

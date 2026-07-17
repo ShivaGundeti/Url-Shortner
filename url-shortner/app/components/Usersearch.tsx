@@ -123,11 +123,11 @@ export default function UserSearch() {
                                                     </div>
                                                 </td>
                                                 <td className="py-5 px-4 text-purple-400 font-medium">
-                                                    http://16.171.3.40/url/{item.short_url}
+                                                    {process.env.NEXT_PUBLIC_API_URL}/url/{item.short_url}
                                                 </td>
                                                 <td className="py-5 text-right pr-2">
                                                     <a 
-                                                        href={`http://16.171.3.40/url/${item.short_url}`}
+                                                        href={`${process.env.NEXT_PUBLIC_API_URL}/url/${item.short_url}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all hover:scale-105 active:scale-95"

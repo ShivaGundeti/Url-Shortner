@@ -10,6 +10,6 @@ export interface UserUrlsResponse {
 
 
 export async function GetUserUrls(){
-    const api = await axios.get<UserUrlsResponse>(`${process.env.NEXT_PUBLIC_API_URL}/url/user`,{withCredentials:true})
+    const api = await axios.get<UserUrlsResponse>("http://16.171.3.40:80/url/user",{withCredentials:true})
     return api.data.data
 }

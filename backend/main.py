@@ -49,15 +49,8 @@ async def shutdown():
 
 @app.get("/")
 async def root():
-    hostname = socket.gethostname()
-    return {"Message": f"Welcome to the Url shortner API!! Served by Server ID: {hostname}"}
+    return {"Message": "Welcome to the Url shortner API!!"}
 
-
-@app.post("/url/test-api")
-async def TestPass(url: PassRequest):
-    password = url.password
-    hashed = pwd_context.hash(password)
-    return {"Sucess": hashed}
 
 @app.post("/url/register")
 async def SignUp(request: AuthRequest):

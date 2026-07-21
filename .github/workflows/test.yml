@@ -26,9 +26,9 @@ jobs:
       - name: Install Dependencies
         run: |
           cd backend
-          prisma generate
           pip install -r requirements.txt
           pip install pytest httpx
+           prisma generate
 
       # 5. Run the actual test!
       - name: Run PyTest

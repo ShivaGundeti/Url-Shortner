@@ -26,6 +26,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd backend
+          prisma generate
           pip install -r requirements.txt
           pip install pytest httpx
 

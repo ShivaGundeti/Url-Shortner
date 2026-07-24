@@ -6,8 +6,11 @@ import { useForm } from "react-hook-form";
 import { Login, AuthRequest } from "../../api/index"
 import LoginSchema from "@/schemas/loginschema";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import ParticleBackground from "../components/ParticleBackground";
 
 export default function Loginpage() {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     
     const { register, handleSubmit, formState: { errors } } = useForm<AuthRequest>({
@@ -18,6 +21,7 @@ export default function Loginpage() {
         mutationFn: Login,
         onSuccess: (data) => {
             console.log("Logged in successfully:", data);
+            router.push("/");
         },
         onError: (error) => {
             console.error("Something went wrong!", error)
@@ -29,11 +33,19 @@ export default function Loginpage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Welcome Back</h2>
-                    <p className="text-gray-400 mt-2 text-sm">Sign in to manage your short links</p>
+        <main className="relative min-h-screen bg-[#050505] flex items-center justify-center font-sans overflow-hidden px-4 py-20">
+            {/* Interactive Particle Canvas */}
+            <ParticleBackground />
+
+            {/* Antigravity-style Glow Effects */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
+            <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
+
+            <div className="relative z-10 w-full max-w-md bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] rounded-[2rem] p-8 shadow-2xl group">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div className="text-center mb-8 relative z-10">
+                    <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Welcome Back</h2>
+                    <p className="text-gray-400 mt-2 text-sm font-medium">Sign in to manage your short links</p>
                 </div>
 
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
@@ -88,6 +100,6 @@ export default function Loginpage() {
                     Don't have an account? <Link href="/register" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">Register here</Link>
                 </p>
             </div>
-        </div>
+        </main>
     )
 }

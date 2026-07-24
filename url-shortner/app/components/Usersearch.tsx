@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import {ShortnerUrl} from "../../api/index";
 import NewUrl from "./NewUrl"
 import {GetUserUrls} from "../../api/user"
@@ -9,6 +10,7 @@ import ParticleBackground from "./ParticleBackground"
 
 export default function UserSearch() {
     const queryClient = useQueryClient();
+    const router = useRouter();
     const[Url,setUrl] = useState("")
     const [ShortUrl,setShortUrl] = useState("")
     
@@ -27,6 +29,12 @@ export default function UserSearch() {
         queryKey:["Users"],
         queryFn: GetUserUrls
     })
+
+    useEffect(() => {
+        if (error) {
+            router.push("/login");
+        }
+    }, [error, router]);
 
     return (
         <main className="relative min-h-screen bg-[#050505] flex flex-col items-center font-sans overflow-hidden px-4 py-20 lg:py-32">

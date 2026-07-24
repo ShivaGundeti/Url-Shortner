@@ -11,18 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to EC2
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Copy files to EC2 via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          source: "."
+          target: "Url-Shortner-Project"
+
+      - name: Rebuild Docker Containers via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ubuntu
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-
           script: |
             cd Url-Shortner-Project
-            git pull origin main
-
             echo "NEXT_PUBLIC_API_URL=http://${{ secrets.AWS_HOST }}:80" > url-shortner/.env.production
             sudo docker compose up -d --build
-            
-            

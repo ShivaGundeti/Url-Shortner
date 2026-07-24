@@ -32,4 +32,5 @@ jobs:
           script: |
             cd Url-Shortner-Project
             echo "NEXT_PUBLIC_API_URL=http://${{ secrets.AWS_HOST }}:80" > url-shortner/.env.production
+            echo "DATABASE_URL=postgresql://postgres:urlshortner6801@url-postgres:5432/postgres" > backend/.env
             sudo docker compose up -d --build
